@@ -1,0 +1,111 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage{fullpage} % changes the margin
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{listings}
+\lstset
+{
+  language=Scala,
+  basicstyle=\footnotesize,
+  numbers=left,
+  stepnumber=1,
+  showstringspaces=false,
+  tabsize=1,
+  breaklines=true,
+  breakatwhitespace=false,
+}
+
+\begin{document}
+\noindent
+\large\textbf{Lab 1} \hfill \textbf{Kayla Gehring} \\
+\normalsize CSCI 3155, Spring 2018 \hfill Teammate: Tom Eldar \\
+
+\section*{Written Problems}
+
+\subsection*{2. Scala Basics: Binding and Scope}
+\textit{For each of the following uses of names, give the where that name is bound. Briefly explain your reasoning.}
+
+\begin{enumerate}[label=(\alph*)]
+
+\item\textit{The use of pi at line 4 is bound at which line? The use of pi at line 7 is bound at which line?}
+
+  \begin{lstlisting}[language=Scala]
+    val pi = 3.14
+    def circumference(r: Double): Double = {
+      val pi = 3.14159
+      2.0 * pi * r
+    }
+    def area(r: Double): Double =
+      pi * r * r
+  \end{lstlisting}
+
+  \vspace{0.2in}
+
+    \large{Line 4 is within the definition of `circumference' from lines 2-5, and uses the value 'pi' bound at line 3 (val pi = 3.14159).
+
+    Line 7 is within the definition of 'area,' which does not bind 'pi' to any value within it, and therefore uses the value 'pi' bound in the global scope at line 1 (val pi = 3.14).}
+
+    \vspace{0.2in}
+
+  \item
+    \textit{The use of x at line 3 is bound at which line? The use of x at line 6 is bound at which line? The use of x at line 10 is bound at which line? The use of x at line 13 is bound at which line?}
+
+    \begin{lstlisting}[language=Scala]
+      val x = 3
+      def f(x: Int): Int =
+      x match {
+        case 0 => 0
+        case x => {
+          val y = x + 1
+          ({
+            val x = y + 1
+            y
+          } * f(x - 1))
+        }
+      }
+    val y = x + f(x)
+  \end{lstlisting}
+
+  \vspace{0.2in}
+
+  \large{The use of x at line 3 is bound at line 2 (def f(x: Int): Int = ), because it's within the scope of the function 'f'.
+
+  The use of x at line 6 is bound at line 2, again because it's within the scope of function 'f,' and previous uses of 'x' in the scope are for pattern matching.
+
+  The use of x at line 10 is bound at line 2. The binding of x at line 8 is only valid at line 8 and 9, and ends at the \{ on line 10.
+
+  The use of x at line 13 is bound at line 1 (val x = 3) in the global scope. This is because line 13 outside the scope of the function 'f' and all scopes within 'f'.}
+
+  \vspace{0.2in}
+
+\end{enumerate}
+
+  \subsection*{3. Scala Basics: Typing}
+  \textit{In the following. I have left off the return type of function g. The body of g is well-typed if we can come up with a valid return type. Is the body of g well-typed?}
+  \begin{lstlisting}[language=Scala]
+    def g(x: Int) = {
+      val (a, b) = (1, (x, 3))
+      if (x == 0) (b, 1) else (b, a + 2)
+    }
+  \end{lstlisting}
+
+  \vspace{0.2in}
+  Yes, the body expression of 'g' is well-typed with a nested tuple of type (Int,(Int, Int)).
+
+\begin{verbatim}
+(b, c):((Int, Int), Int) because
+     b:(Int, Int) because
+          val (a, b) = (1, (x, 3))
+               x:Int
+               3:Int
+     c:Int because
+          1:Int (when x == 0)
+          a + 2:Int (when x != 0) because
+               val (a, b) = (1, (x, 3))
+                   1:Int
+               2:Int
+\end{verbatim}
+
+  \vspace{0.2in}
+
+\end{document}
